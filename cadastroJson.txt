@@ -1,0 +1,42 @@
+{
+	"nome":"Igor Borgio",
+	"cpf":"99999999999",
+	"login":"igorovisk",
+	"password":"wiseigor",
+	"dataDeNascimento":"1994/03/14",
+	"resetPassword":"12345",
+	"email":"igorovisk@gmail.com",
+	"isAdm":true	
+}
+
+{
+	"nome":"William Alberton",
+	"cpf":"12365498745",
+	"login":"willalb",
+	"password":"wisewill",
+	"dataDeNascimento":"1980/04/14",
+	"resetPassword":"54321",
+	"email":"willalb@gmail.com",
+	"isAdm":false	
+}
+
+
+
+PADRÃO ANTIGO QUE USEI ANTES DE TENTAR FAZER RELACIONAMENTO: (VAI DENTRO DO Usuario.Create()   )
+			{ nome,
+            cpf,
+            login,
+            password,
+            dataDeNascimento,
+            resetPassword,
+            email,
+            isAdm,
+			}
+
+			COMANDOS DROP tabela
+
+			drop table SequelizeMeta;
+			drop table Usuario_Habilidade;
+			drop table Habilidades;
+			drop table Usuarios;
+        

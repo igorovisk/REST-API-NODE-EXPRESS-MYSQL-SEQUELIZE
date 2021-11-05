@@ -1,0 +1,24 @@
+{
+  "name": "projeto2",
+  "version": "1.0.0",
+  "description": "api rest crud nodejs mysql",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "crud",
+    "js",
+    "nodejs"
+  ],
+  "author": "igor borgio",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^2.3.2",
+    "nodemon": "^2.0.14",
+    "sequelize": "^6.9.0"
+  }
+}
