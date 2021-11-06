@@ -1,18 +1,20 @@
 const { Router } = require("express")
-const { Usuarios } = require("../models")
+const { Usuario } = require("../models")
 const { Habilidades } = require("../models")
+
 
 const router = Router()
 
 //GET ALL
 router.get("/", async (req, res) => {
     try {
-        const usuarios = await Usuarios.findAll(
+        const usuarios = await Usuario.findAll(
             {
             include: [
                 {
                     model: Habilidades,
-                    as: "Habilidades",
+                    as:"habilidades",
+                    through: "Usuarios_Habilidades"
                 },
             ],
         })
@@ -28,7 +30,7 @@ router.get("/", async (req, res) => {
 //GET UM SÓ USUARIO
 router.get("/:id", async (req, res) => {
     try {
-        const usuario = await Usuarios.findByPk(req.params.id,          
+        const usuario = await Usuario.findByPk(req.params.id,          
         )  
         res.status(200).json(usuario)
     } catch (erro) {
@@ -39,15 +41,18 @@ router.get("/:id", async (req, res) => {
 //CREATE
 router.post("/", async (req, res) => {
     try {
-        const { habilidade, ...data } = req.body
+        const { habilidades, ...data } = req.body
         console.log(req.body)
-
-        const newUsuario = Usuarios.create(data)
+        console.log(data)
+        console.log(habilidades)
+        console.log(Usuario)
+        const newUsuario = await Usuario.create(data)
         
-        // if (habilidades && habilidades.length > 0) {
-        //     newUsuario.setHabilidades(habilidades)
-        // }
         console.log(newUsuario)
+        // if (habilidades && habilidades.length > 0) {
+        //     newUsuario.setHabilidades(habilidade)
+        // }
+        
         res.status(200).json({
             message: "cadastrado com sucesso",
             usuariocriado: req.body,
@@ -56,13 +61,14 @@ router.post("/", async (req, res) => {
         res.status(500).json({
             message: erro,
         })
+        console.log(erro)
     }
 })
 
 //DELETE
 router.delete("/:id", async (req, res) => {
     try {
-        const deletedUsuario = await Usuarios.destroy({
+        const deletedUsuario = await Usuario.destroy({
             where: {
                 id: req.params.id,
             },

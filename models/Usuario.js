@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Usuario.associate = (models) => {
-        Usuario.belongsToMany(models.Habilidade, {
+        Usuario.Habilidades = Usuario.belongsToMany(models.Habilidades, {
             through: "Usuarios_Habilidades",
             as: "habilidades",
-            foreignKey: "usuario_id",
+            foreignKey: "usuarioId",
         })
     }
     return Usuario

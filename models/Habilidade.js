@@ -1,4 +1,4 @@
-const { Usuario } = require("./Usuario")
+
 
 module.exports = (sequelize, DataTypes) => {
     const Habilidade = sequelize.define("Habilidades", {
@@ -6,10 +6,11 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Habilidade.associate = (models) => {
-        Habilidade.belongsToMany(models.Usuario, {
+            
+        Habilidade.Usuario = Habilidade.belongsToMany(models.Usuario, {
             through: "Usuarios_Habilidades",
             as: "usuarios",
-            foreignKey: "habilidade_id",
+            foreignKey: "habilidadeId",
         })
     }
 
