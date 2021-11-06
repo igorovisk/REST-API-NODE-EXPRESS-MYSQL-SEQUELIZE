@@ -1,25 +1,23 @@
 const { Router } = require("express")
-const { Usuario } = require("../models")
+const { Usuarios, Sequelize } = require("../models")
 const { Habilidades } = require("../models")
-
 
 const router = Router()
 
 //GET ALL
 router.get("/", async (req, res) => {
     try {
-        const usuarios = await Usuario.findAll(
-            {
+        const usuarios = await Usuarios.findAll({
             include: [
                 {
                     model: Habilidades,
-                    as:"habilidades",
-                    through: "Usuarios_Habilidades"
+                    as: "habilidades",
+                    through: { attributes: [] },
                 },
             ],
         })
-        console.log("Console log da Lista de usuarios" + usuarios)
-        console.log(usuarios)
+
+       
         res.status(200).json(usuarios)
     } catch (erro) {
         console.log(erro)
@@ -30,8 +28,7 @@ router.get("/", async (req, res) => {
 //GET UM SÓ USUARIO
 router.get("/:id", async (req, res) => {
     try {
-        const usuario = await Usuario.findByPk(req.params.id,          
-        )  
+        const usuario = await Usuarios.findByPk(req.params.id)
         res.status(200).json(usuario)
     } catch (erro) {
         res.status(500).json(erro)
@@ -42,20 +39,16 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const { habilidades, ...data } = req.body
-        console.log(req.body)
-        console.log(data)
-        console.log(habilidades)
-        console.log(Usuario)
-        const newUsuario = await Usuario.create(data)
+
+        // const habilidade = await Habilidades.findByPk(1)
+
+        const newUsuario = await Usuarios.create(data)
         
-        console.log(newUsuario)
-        // if (habilidades && habilidades.length > 0) {
-        //     newUsuario.setHabilidades(habilidade)
-        // }
-        
+        newUsuario.setHabilidades(habilidades);     
+
         res.status(200).json({
             message: "cadastrado com sucesso",
-            usuariocriado: req.body,
+            usuariocriado: newUsuario,
         })
     } catch (erro) {
         res.status(500).json({
@@ -68,7 +61,7 @@ router.post("/", async (req, res) => {
 //DELETE
 router.delete("/:id", async (req, res) => {
     try {
-        const deletedUsuario = await Usuario.destroy({
+        const deletedUsuario = await Usuarios.destroy({
             where: {
                 id: req.params.id,
             },
@@ -117,7 +110,7 @@ router.put("/:id", async (req, res) => {
             }
         )
         res.status(200).json({
-            message: "Usuario alterado com sucesso",
+            message: "Usuarios alterado com sucesso",
             updatedUsuario: req.body,
         })
     } catch (erro) {

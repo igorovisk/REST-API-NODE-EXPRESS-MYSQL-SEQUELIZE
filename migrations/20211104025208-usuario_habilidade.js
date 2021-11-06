@@ -12,16 +12,16 @@ module.exports = {
             },
             usuarioId: {
                 type: Sequelize.INTEGER,
-                references: { model: "Usuarios", key: "id" },
-                //SE DELETAR UM USUARIO ID, A TABELA DE RELACIOMENTO TBM DELETARÁ, ISSO É O MODO CASCADE
-                onDelete: "CASCADE",
+                references: { model: "Usuarios", targetKey: "id" },
+               
+
                 allowNull: false,
             },
             habilidadeId: {
                 type: Sequelize.INTEGER,
-                references: { model: "Habilidades", key: "id" },
-                //SE DELETAR UM USUARIO ID, A TABELA DE RELACIOMENTO TBM DELETARÁ, ISSO É O MODO CASCADE
-                onDelete: "CASCADE",
+                references: { model: "Habilidades", targetKey: "id" },
+               
+
                 allowNull: false,
             },
             createdAt: {
