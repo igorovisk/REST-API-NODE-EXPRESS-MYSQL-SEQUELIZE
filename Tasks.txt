@@ -1,0 +1,26 @@
+
+------------------------------------
+CRUD
+
+USUARIOs:
+get: ok
+getAll: ok
+update: ok
+create: ok
+
+HABILIDADES: 
+get: ok
+getAll: ok
+update: ok
+create: ok
+
+-------------------------------------
+VALIDAÇÕES:
+
+USUARIOS:
+create do usuario: falta isAdm e criar o token de resetPassword
+
+
+HABILIDADES:
+create da habilidade: ok
+

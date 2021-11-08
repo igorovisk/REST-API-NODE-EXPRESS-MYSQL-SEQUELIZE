@@ -1,6 +1,8 @@
 const { Router } = require("express")
+
 const { Usuarios, Sequelize } = require("../models")
 const { Habilidades } = require("../models")
+const { usuarioSchema } = require("../schemas/usuarioSchema")
 
 const router = Router()
 
@@ -17,10 +19,8 @@ router.get("/", async (req, res) => {
             ],
         })
 
-       
         res.status(200).json(usuarios)
     } catch (erro) {
-        console.log(erro)
         res.status(500).json(erro)
     }
 })
@@ -28,7 +28,16 @@ router.get("/", async (req, res) => {
 //GET UM SÓ USUARIO
 router.get("/:id", async (req, res) => {
     try {
-        const usuario = await Usuarios.findByPk(req.params.id)
+        const usuario = await Usuarios.findByPk(req.params.id, {
+            include: [
+                {
+                    model: Habilidades,
+                    as: "habilidades",
+                    through: { attributes: [] },
+                },
+            ],
+        })
+
         res.status(200).json(usuario)
     } catch (erro) {
         res.status(500).json(erro)
@@ -40,19 +49,32 @@ router.post("/", async (req, res) => {
     try {
         const { habilidades, ...data } = req.body
 
-        // const habilidade = await Habilidades.findByPk(1)
+        //Validação
+        const usuarioValido = await usuarioSchema.validate(req.body)
+        console.log(usuarioValido.error)
 
-        const newUsuario = await Usuarios.create(data)
-        
-        newUsuario.setHabilidades(habilidades);     
+        if (usuarioValido.error) throw new Error(usuarioValido.error)
 
-        res.status(200).json({
-            message: "cadastrado com sucesso",
-            usuariocriado: newUsuario,
+        const existeNoSistema = await Usuarios.findOne({
+            where: { email: data.email, cpf: data.cpf, login: data.login },
         })
+        if (existeNoSistema)
+            throw new Error("email, cpf ou login já cadastrados")
+
+        if (usuarioValido && !existeNoSistema) {
+            const newUsuario = await Usuarios.create(data)
+            console.log("USUARIO CRIADO:")
+            console.log(newUsuario)
+            newUsuario.setHabilidades(habilidades)
+
+            res.status(200).json({
+                message: "Usuario cadastrado com sucesso:",
+                usuariocriado: newUsuario,
+            })
+        }
     } catch (erro) {
         res.status(500).json({
-            message: erro,
+            message: `Ocorreu um erro.. ${erro}`,
         })
         console.log(erro)
     }
@@ -81,40 +103,34 @@ router.delete("/:id", async (req, res) => {
 //UPDATE
 router.put("/:id", async (req, res) => {
     try {
-        const {
-            nome,
-            cpf,
-            login,
-            password,
-            dataDeNascimento,
-            resetPassword,
-            email,
-            isAdm,
-        } = req.body
+        const { habilidades, ...data } = req.body
 
-        const updatedUsuario = await Usuarios.update(
-            {
-                nome,
-                cpf,
-                login,
-                password,
-                dataDeNascimento,
-                resetPassword,
-                email,
-                isAdm,
-            },
-            {
+        //Validação
+        const usuarioValido = await usuarioSchema.validate(req.body)
+        console.log(usuarioValido.error)
+
+        if (usuarioValido.error) throw new Error(usuarioValido.error)
+
+        if (usuarioValido) {
+            const updatedUsuario = await Usuarios.update(data, {
                 where: {
                     id: req.params.id,
                 },
-            }
-        )
+            })
+            const usuarioSelecionado = `Usuarios`
+            console.log("UPDATED USUARIO:")
+        }
+        const id = req.params.id
+        const alteraHabilidade = await Usuarios.findByPk(id)
+        alteraHabilidade.setHabilidades(habilidades)
+
         res.status(200).json({
-            message: "Usuarios alterado com sucesso",
+            message: "Usuario alterado com sucesso",
             updatedUsuario: req.body,
         })
     } catch (erro) {
-        res.status(500).json({ message: "Erro ao alterar usuario" })
+        res.status(500).json({ message: erro })
+        console.log(erro)
     }
 })
 

@@ -1,5 +1,6 @@
 const { Router } = require("express")
 const { Habilidades } = require("../models")
+const { habilidadeSchema } = require("../schemas/habilidadeSchema")
 
 const router = Router()
 
@@ -18,29 +19,41 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const habilidade = await Habilidades.findByPk(req.params.id) // Ou usar o findOne, mas não sei como ligar ele ao front pra pegar o input da habilidade
-        res.status(200).json(usuario)
+        res.status(200).json(habilidade)
     } catch (erro) {
-        res.status(500).json(erro)
+        res.status(500).json({message: erro})
     }
 })
 
 //CREATE
 router.post("/", async (req, res) => {
     try {
-        const { nome } = req.body
+        const data = req.body
 
-        const newHabilidade = Habilidades.create({
-            nome,
-        })
+        const habilidadeValida = await habilidadeSchema.validate(data)
+        console.log(habilidadeValida)
 
-        console.log(req.body)
-        console.log(newHabilidade)
-        res.status(200).json({
-            message: "Nova habilidade cadastrada com sucesso",
-            newHabilidade: req.body,
+        if (habilidadeValida.error) throw new Error(habilidadeValida.error)
+
+        const existeNoSistema = await Habilidades.findOne({
+            where: { nome: data.nome },
         })
+        if (existeNoSistema)
+            throw new Error("habilidade já cadastrada no sistema")
+
+        if (habilidadeValida && !existeNoSistema) {
+            const habilidadeCriada = await Habilidades.create(data)
+
+            res.status(200).json({
+                message: "Habilidade cadastrada com sucesso:",
+                habilidadeCriada: habilidadeCriada,
+            })
+        }
     } catch (erro) {
-        res.status(500).json(erro)
+        res.status(500).json({
+            message: `Ocorreu um erro.. ${erro}`,
+        })
+        console.log(erro)
     }
 })
 
@@ -83,7 +96,7 @@ router.put("/:id", async (req, res) => {
             updatedHabilidade: req.body,
         })
     } catch (erro) {
-        res.status(500).json({ message: "Erro ao alterar usuario" })
+        res.status(500).json({ message: erro })
     }
 })
 
