@@ -1,7 +1,6 @@
 const { Router } = require("express")
 const { Habilidades } = require("../models")
 const { habilidadeSchema } = require("../schemas/habilidadeSchema")
-
 const router = Router()
 
 //GET ALL

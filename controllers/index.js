@@ -1,9 +1,12 @@
-const { request } = require('express')
-
 const usuariosController = require("./usuariosController")
 const habilidadesController = require("./habilidadesController")
+const authController = require("./authController")
+
+
+
 
 module.exports = {
     usuarios: usuariosController,
-    habilidades: habilidadesController
+    habilidades: habilidadesController,
+    autenticacao: authController,
 }

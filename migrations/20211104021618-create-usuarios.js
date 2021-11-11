@@ -1,5 +1,7 @@
 "use strict"
 
+const bcrypt = require("bcrypt")
+
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         return queryInterface.createTable("Usuarios", {
@@ -25,6 +27,7 @@ module.exports = {
             password: {
                 type: Sequelize.STRING,
                 allowNull: false,
+                select: false, 
             },
             dataDeNascimento: {
                 type: Sequelize.DATEONLY,
@@ -38,10 +41,10 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            isAdm:{
+            isAdm: {
                 type: Sequelize.BOOLEAN,
-                allowNull:false,
-                default:false
+                allowNull: false,
+                default: false,
             },
             createdAt: {
                 type: Sequelize.DATE,

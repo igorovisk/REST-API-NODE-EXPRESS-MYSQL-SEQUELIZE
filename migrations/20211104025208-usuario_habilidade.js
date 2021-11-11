@@ -13,15 +13,13 @@ module.exports = {
             usuarioId: {
                 type: Sequelize.INTEGER,
                 references: { model: "Usuarios", targetKey: "id" },
-                
-
+                OnDelete: "CASCADE",
                 allowNull: false,
             },
             habilidadeId: {
                 type: Sequelize.INTEGER,
                 references: { model: "Habilidades", targetKey: "id" },
-               
-
+                OnDelete: "CASCADE",
                 allowNull: false,
             },
             createdAt: {
