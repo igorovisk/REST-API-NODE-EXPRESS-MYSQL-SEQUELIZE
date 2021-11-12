@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING,
         dataDeNascimento: DataTypes.DATEONLY,
         resetPassword: DataTypes.STRING,
+        resetPasswordExpires: DataTypes.DATE,
         email: DataTypes.STRING,
         isAdm: DataTypes.BOOLEAN,
     })

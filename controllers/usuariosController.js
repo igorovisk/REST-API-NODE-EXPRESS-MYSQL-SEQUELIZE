@@ -159,6 +159,8 @@ router.post("/", async (req, res) => {
 router.delete("/:id", verificaJWT, async (req, res) => {
     try {
         const sql = `DELETE FROM Usuarios_Habilidades where usuarioId = ${req.params.id} `
+
+        //DELETA A HABILIDADE LIGADA AO USUARIO ANTES
         const deleteRelation = con.query(sql)
 
         const usuarioExistente = await Usuarios.findOne({
@@ -205,7 +207,7 @@ router.put("/:id", verificaJWT, async (req, res) => {
                     id: req.params.id,
                 },
             })
-            const usuarioSelecionado = `Usuarios`
+            
             console.log("UPDATED USUARIO:")
         }
         const id = req.params.id

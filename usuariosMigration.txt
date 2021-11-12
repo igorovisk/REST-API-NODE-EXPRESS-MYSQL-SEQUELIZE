@@ -57,3 +57,5 @@ module.exports = {
     },
 }
 
+
+const sql = `UPDATE Usuarios SET resetPassword = "${tokenMail}", resetPasswordExpires = "2021-11-11 19:17:56" WHERE email = "igorovisk@gmail.com";

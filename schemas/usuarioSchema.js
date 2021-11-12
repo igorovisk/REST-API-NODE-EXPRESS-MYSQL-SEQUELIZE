@@ -8,10 +8,10 @@ const usuarioSchema = Joi.object({
     cpf: Joi.string().min(11).max(11).required(),
     login: Joi.string().min(6).required(),
     password: Joi.string().min(6).required(),
-    dataDeNascimento: Joi.date().less(now),
-    resetPassword: Joi.string().min(5), //IMPLEMENTARautogenerate
+    dataDeNascimento: Joi.date().less(now).required,
+    resetPassword: Joi.string(),    
     email: Joi.string().email().lowercase().required(),
-    isAdm: Joi.boolean(),
+    isAdm: Joi.boolean().required(),
     habilidades: Joi.array(),
 })
 
