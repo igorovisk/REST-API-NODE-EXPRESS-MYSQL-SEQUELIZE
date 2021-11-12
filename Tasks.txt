@@ -5,8 +5,10 @@ CRUD
 USUARIOs:
 get: ok
 getAll: ok
-update: ok
+update: VER COMO CRIPTOGRAFAR O PASSWORD
 create: ok
+
+
 
 HABILIDADES: 
 get: ok
@@ -15,10 +17,12 @@ update: ok
 create: ok
 
 -------------------------------------
-VALIDAÇÕES:
+FUNÇÕES:
 
-USUARIOS:
-create do usuario: falta isAdm e criar o token de resetPassword
+criptografar password sempre que for alterado ou criado um novo usuario ok
+geração de token de reset password enviado por email: ok
+gerar token de autenticação no login que vai pelo header ok
+
 
 
 HABILIDADES:

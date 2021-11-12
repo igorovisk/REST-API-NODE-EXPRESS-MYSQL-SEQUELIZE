@@ -31,11 +31,11 @@ module.exports = {
             },
             dataDeNascimento: {
                 type: Sequelize.DATEONLY,
-                allowNull: false,
+                allowNull: true,
             },
             resetPassword: {
                 type: Sequelize.STRING,
-                allowNull: false,
+                allowNull: true,
                 select: false, 
             },
             resetPasswordExpires: {

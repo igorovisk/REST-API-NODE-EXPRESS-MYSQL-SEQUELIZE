@@ -197,30 +197,35 @@ router.put("/:id", verificaJWT, async (req, res) => {
 
         //Validação
         const usuarioValido = await usuarioSchema.validate(req.body)
-        console.log(usuarioValido.error)
-
-        if (usuarioValido.error) throw new Error(usuarioValido.error)
+               
+        if (usuarioValido.error) throw new Error(usuarioValido.error)            
 
         if (usuarioValido) {
             const updatedUsuario = await Usuarios.update(data, {
                 where: {
                     id: req.params.id,
                 },
-            })
-            
-            console.log("UPDATED USUARIO:")
+            })                      
+            if(updatedUsuario == 0) throw new Error("Usuario não encontrado")
         }
+
+
+        //CRIPTOGRAFA O PASSWORD E ENVIA PRO BANCO
+        const hashedPassword = await bcrypt.hash(data.password, 10)
+        const sql = `UPDATE Usuarios SET password = "${hashedPassword}" WHERE email = "${data.email}";`
+        
+        const queryGravaPasswordCriptografado = con.query(sql)
+
         const id = req.params.id
         const alteraHabilidade = await Usuarios.findByPk(id)
         alteraHabilidade.setHabilidades(habilidades)
 
         res.status(200).json({
-            message: "Usuario alterado com sucesso",
-            updatedUsuario: req.body,
+            message: "Usuario alterado com sucesso",           
         })
     } catch (erro) {
-        res.status(500).json({ message: erro })
         console.log(erro)
+        return res.status(400).json( erro )
         
     }
 })
