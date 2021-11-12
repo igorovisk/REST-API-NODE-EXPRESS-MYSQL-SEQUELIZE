@@ -9,7 +9,6 @@ const crypto = require("crypto")
 const mysql = require("mysql2")
 const mailer = require("../modules/mailer")
 
-
 ////////////////////////////////////////
 
 //CONEXÃO COM BANCO
@@ -112,15 +111,13 @@ router.post("/forgotpassword", async (req, res) => {
     }
 })
 
-
-
 //////////////////////////////////////////////////////// RESET PASSWORD COM TOKEN DO EMAIL
+
 router.post("/resetPassword", async (req, res) => {
     //Usuario vai informar o token fornecido pela rota /ForgetPassword que tá gravada no banco de dados
     const { email, tokenInformado, novoPassword } = req.body
 
     try {
-        
         const usuario = await Usuarios.findOne({
             where: {
                 email: email,
@@ -129,11 +126,15 @@ router.post("/resetPassword", async (req, res) => {
         console.log(usuario)
         if (usuario == null || email !== usuario.dataValues.email)
             throw new Error("usuario com este email não encontrado")
-    
 
         const tokenResetPasswordBanco = usuario.dataValues.resetPassword
         if (tokenResetPasswordBanco !== tokenInformado)
             throw new Error("Token de reset password incorreto")
+
+        //VERIFICA SE O TOKEN JÁ TÁ EXPIRADO:
+        const now = new Date()
+        if (now > usuario.dataValues.resetPasswordExpires)
+            throw new Error("Token expirado, por favor, faça uma nova requisição")
 
         //////////////SE PASSAR PELA VALIDAÇÃO, SETAR NOVO PASSWORD:
         const novoPasswordCriptografado = await bcrypt.hash(novoPassword, 10)
@@ -149,10 +150,10 @@ router.post("/resetPassword", async (req, res) => {
         })
 
         res.status(200).send({ message: "Password alterado com sucesso!" })
-
     } catch (err) {
         console.log(err)
-        res.status(400).json(err)
+        res.status(400).json({ error: err })
+        //VER O PORQUE O ERRO NÃO TÁ SENDO MANDADO POR JSON, MAS IMPRIMIDO NO CONSOLE
     }
 })
 
