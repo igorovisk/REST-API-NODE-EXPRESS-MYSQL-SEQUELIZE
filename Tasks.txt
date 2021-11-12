@@ -8,8 +8,6 @@ getAll: ok
 update: VER COMO CRIPTOGRAFAR O PASSWORD
 create: ok
 
-
-
 HABILIDADES: 
 get: ok
 getAll: ok
@@ -19,8 +17,15 @@ create: ok
 -------------------------------------
 FUNÇÕES:
 
+
+SEED DO BANCO > FAZER
+
 criptografar password sempre que for alterado ou criado um novo usuario ok
+
+ENVIO DE MAIL: https://mailtrap.io/inboxes/1533121/messages/2473221902
+
 geração de token de reset password enviado por email: ok
+
 gerar token de autenticação no login que vai pelo header ok
 
 

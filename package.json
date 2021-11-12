@@ -24,6 +24,7 @@
     "express-session": "^1.17.2",
     "joi-cpf-cnpj": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
+    "morgan-body": "^2.6.6",
     "mysql2": "^2.3.2",
     "nodemailer": "^6.7.0",
     "nodemailer-express-handlebars": "^4.0.0",

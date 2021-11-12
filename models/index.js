@@ -47,22 +47,4 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
-// const { Usuario } = require("./Usuario")
-// Usuario.associate = (models) => {
-//     Usuario.belongsToMany(models.Habilidade, {
-//         through: "Usuarios_Habilidades",
-//         as: "habilidades",
-//         foreignKey: "usuario_id",
-//     })
-// }
-
-// const { Habilidade } = require("./Habilidade")
-// Habilidade.associate = (models) => {
-//     Habilidade.belongsToMany(models.Usuario, {
-//         through: "Usuarios_Habilidades",
-//         as: "usuarios",
-//         foreignKey: "habilidade_id",
-//     })
-// }
-
 module.exports = db

@@ -2,7 +2,7 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        return queryInterface.createTable("Usuarios_Habilidades", {
+        return queryInterface.createTable("Logs", {
             // nome de tabela é no PLURAL
             id: {
                 type: Sequelize.INTEGER,
@@ -10,17 +10,13 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
-            usuarioId: {
-                type: Sequelize.INTEGER,
-                references: { model: "Usuarios", targetKey: "id" },
-                OnDelete: "CASCADE",
+            descricao: {
+                type: Sequelize.TEXT,
                 allowNull: false,
             },
-            habilidadeId: {
-                type: Sequelize.INTEGER,
-                references: { model: "Habilidades", targetKey: "id" },
-                OnDelete: "CASCADE",
-                allowNull: true,
+            metodo: {
+                type: Sequelize.STRING,
+                allowNull: false,
             },
             createdAt: {
                 type: Sequelize.DATE,
@@ -32,8 +28,7 @@ module.exports = {
             },
         })
     },
-
     down: async (queryInterface, Sequelize) => {
-        return queryInterface.dropTable("Usuarios_Habilidades")
+        return queryInterface.dropTable("Logs")
     },
 }

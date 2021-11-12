@@ -56,11 +56,12 @@ router.post("/logout", (req, res) => {
 ////////////////////////////////////////////////   RECUPERAÇÃO DE SENHA
 
 router.post("/forgotpassword", async (req, res) => {
-    const { email } = req.body
+    const { email, login} = req.body
 
     try {
         const usuario = await Usuarios.findOne({
             where: {
+                login: login,
                 email: email,
             },
         })

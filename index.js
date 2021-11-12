@@ -6,8 +6,19 @@ const app = express()
 const port = 5000
 const session = require("express-session")
 const cors = require("cors")
+const morganBody = require("morgan-body")
 
 app.get("/", (req, res) => res.send("Server Iniciado..."))
+
+
+//IMPLEMENTAR MORGANBODY PARA FAZER LOG DO SISTEMA
+
+
+
+
+/////////////////////////
+
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
