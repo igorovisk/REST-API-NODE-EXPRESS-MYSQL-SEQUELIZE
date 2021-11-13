@@ -3,6 +3,7 @@ const {
     getAll,
     getUsuariosComuns,
     getUsuarioUnico,
+    getUsuariosPorHabilidades,
     criaUsuario,
     alteraUsuario,
     deletaUsuario,
@@ -14,7 +15,7 @@ const router = Router()
 ///////////////////////////////////////////////////////////////////
 
 //GETALL
-router.get("/", verificaJWT, async (req, res) => {    
+router.get("/", verificaJWT, async (req, res) => {
     getAll(req, res)
 })
 
@@ -26,6 +27,11 @@ router.get("/usuarioscomuns", verificaJWT, async (req, res) => {
 //GET USUARIO POR ID
 router.get("/:id", verificaJWT, async (req, res) => {
     getUsuarioUnico(req, res)
+})
+
+//GET USUARIOS POR HABILIDADE
+router.get("/habilidades/:habilidades", verificaJWT, async (req, res) => {
+    getUsuariosPorHabilidades(req, res)
 })
 
 //CRIA USUARIO

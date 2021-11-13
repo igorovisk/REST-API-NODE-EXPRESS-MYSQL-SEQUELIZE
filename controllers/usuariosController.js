@@ -78,33 +78,26 @@ const getUsuarioUnico = async function (req, res) {
     }
 }
 
-//GET USUARIO POR HABILIDADE
+// GET USUARIOS POR HABILIDADE
 
-// const getUsuarioPorHabilidade = async function (req, res) {
-//     try{
+const getUsuariosPorHabilidades = async function (req, res) {
+    try {
+        const habilidadeInformada = req.params.habilidades
 
-//         const habilidadeInformada = req.body.habilidade
+        const sql = `SELECT u.* from Usuarios_Habilidades uh INNER JOIN Usuarios u on u.id = uh.usuarioId WHERE uh.habilidadeId = ${habilidadeInformada}`
 
-//         const sql = `SELECT u.* from Usuarios_Habilidades uh INNER JOIN Usuarios u on u.id = uh.usuarioId WHERE uh.habilidadeId = ${habilidadeInformada}`
+        const lista = con.query(sql, function (err, result) {
+            console.log(result)
+            return res.status(200).json(result)
+        })
+        
+    } catch (err) {
+        console.log(err)
+        res.status(400).send({ message: err })
+    }
+}
 
-//         const usuarios = await Usuarios.findAll({
-//             attributes: { exclude: ["password"] },
-//             include: [
-//                 {
-//                     model: Habilidades,
-//                     as: "habilidades",
-//                     through: { attributes: [] },
-//                 },
-//             ],
-//         })
-
-//     }catch(err){
-//         console.log(err)
-//         res.status(400).send({message: err})
-//     }
-// })
-
-//ADICIONA HABILIDADE AO USUARIO NO FRONT
+// ADICIONA HABILIDADE AO USUARIO NO FRONT
 
 //CREATE
 const criaUsuario = async function (req, res) {
@@ -255,6 +248,7 @@ module.exports = {
     getAll,
     getUsuariosComuns,
     getUsuarioUnico,
+    getUsuariosPorHabilidades,
     criaUsuario,
     deletaUsuario,
     alteraUsuario,
