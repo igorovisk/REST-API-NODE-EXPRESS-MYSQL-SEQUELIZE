@@ -12,8 +12,9 @@ const verificaJWT = function (req, res, next) {
         if (err) {
             res.status(401).json(err)
         }
-        req.login = decoded.login  
-       
+
+        req.login = decoded.login
+
         next()
     })
 }

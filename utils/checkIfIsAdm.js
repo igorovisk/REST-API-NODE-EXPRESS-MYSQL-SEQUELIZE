@@ -1,6 +1,6 @@
 const { Usuarios } = require("../models")
 
-const checkIfIsAdmin = async (req, res) => {
+const checkIfIsAdmin = async function (req, res) {
     const usuario = await Usuarios.findOne({
         where: {
             login: req.login,

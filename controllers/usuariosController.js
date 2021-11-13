@@ -3,6 +3,8 @@ const { usuarioSchema } = require("../schemas/usuarioSchema")
 const Op = require("sequelize").Op
 const mysql = require("mysql2")
 const bcrypt = require("bcrypt")
+const checkIfIsUsuarioLogado = require("../utils/isUsuarioLogado")
+const checkIfIsAdmin = require("../utils/checkIfIsAdm")
 
 /////////////////////////////////////////////////////////////
 
@@ -90,7 +92,6 @@ const getUsuariosPorHabilidades = async function (req, res) {
             console.log(result)
             return res.status(200).json(result)
         })
-        
     } catch (err) {
         console.log(err)
         res.status(400).send({ message: err })
@@ -174,6 +175,14 @@ const criaUsuario = async function (req, res) {
 //DELETE
 const deletaUsuario = async function (req, res) {
     try {
+        
+        if (!(await checkIfIsUsuarioLogado(req, res))) {
+            res.status(401)
+            throw new Error(
+                "Usuario Logado não corresponde ao id que quer deletar"
+            )
+        }
+
         const sql = `DELETE FROM Usuarios_Habilidades where usuarioId = ${req.params.id} `
 
         //DELETA A HABILIDADE LIGADA AO USUARIO ANTES
@@ -201,7 +210,7 @@ const deletaUsuario = async function (req, res) {
     } catch (erro) {
         console.log(erro)
         return res.status(400).json({
-            message: erro,
+            erro,
         })
     }
 }

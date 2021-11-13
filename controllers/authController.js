@@ -22,13 +22,13 @@ var con = mysql.createConnection({
 const login = async function (req, res) {
     const { login, password } = req.body
     const usuario = await Usuarios.findOne({ where: { login: login } })
-    console.log("usuario.login")
-    console.log(usuario.login)
+
     try {
         if (
             usuario &&
             (await bcrypt.compare(password, usuario.dataValues.password))
         ) {
+            const teste = "teste"
             const token = jwt.sign({ login: login }, secret, {
                 expiresIn: 5000,
             })
