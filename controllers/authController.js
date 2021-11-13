@@ -1,8 +1,6 @@
-const { Router } = require("express")
 const { Usuarios } = require("../models")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-const router = Router()
 const { blackList } = require("../middlewares/jwtMiddleware")
 const secret = "teste"
 const crypto = require("crypto")
@@ -21,10 +19,11 @@ var con = mysql.createConnection({
 
 ///////////////////////////////////////////////////METODO AUTENTICAÇÃO
 
-router.post("/login", async (req, res) => {
+const login = async function (req, res) {
     const { login, password } = req.body
     const usuario = await Usuarios.findOne({ where: { login: login } })
-
+    console.log("usuario.login")
+    console.log(usuario.login)
     try {
         if (
             usuario &&
@@ -35,28 +34,26 @@ router.post("/login", async (req, res) => {
             })
             res.status(200).json({
                 message: "logado no sistema!",
+                usuario: login,
                 auth: true,
                 token,
             })
         } else throw new Error("login falhou")
     } catch (erro) {
         res.status(401).json({ message: `${erro}` })
-        console.log(erro)
     }
-})
+}
 
 /////////////////////////////////////////////////////        LOGOUT
 
-router.post("/logout", (req, res) => {
-    console.log("DESLOGADO")
+const logout = async function (req, res) {
     blackList.push(req.headers["x-access-token"])
     res.end()
-})
+}
 
 ////////////////////////////////////////////////   RECUPERAÇÃO DE SENHA
-
-router.post("/forgotpassword", async (req, res) => {
-    const { email, login} = req.body
+const esqueceuSenha = async function (req, res) {
+    const { email, login } = req.body
 
     try {
         const usuario = await Usuarios.findOne({
@@ -66,7 +63,7 @@ router.post("/forgotpassword", async (req, res) => {
             },
         })
         if (!usuario)
-            return res.status(400).send({ error: "Usuario não encontrado" })
+            return res.status(400).send({ error: "Usuario ou email incorreto" })
 
         ///////////////////////////////////     GERA RESET PASSWORD E EXPIRE DATE
 
@@ -110,11 +107,11 @@ router.post("/forgotpassword", async (req, res) => {
     } catch (err) {
         return res.status(400).json({ err })
     }
-})
+}
 
 //////////////////////////////////////////////////////// RESET PASSWORD COM TOKEN DO EMAIL
 
-router.post("/resetPassword", async (req, res) => {
+const resetaPassword = async function (req, res) {
     //Usuario vai informar o token fornecido pela rota /ForgetPassword que tá gravada no banco de dados
     const { email, tokenInformado, novoPassword } = req.body
 
@@ -135,7 +132,9 @@ router.post("/resetPassword", async (req, res) => {
         //VERIFICA SE O TOKEN JÁ TÁ EXPIRADO:
         const now = new Date()
         if (now > usuario.dataValues.resetPasswordExpires)
-            throw new Error("Token expirado, por favor, faça uma nova requisição")
+            throw new Error(
+                "Token expirado, por favor, faça uma nova requisição"
+            )
 
         //////////////SE PASSAR PELA VALIDAÇÃO, SETAR NOVO PASSWORD:
         const novoPasswordCriptografado = await bcrypt.hash(novoPassword, 10)
@@ -156,6 +155,6 @@ router.post("/resetPassword", async (req, res) => {
         res.status(400).json({ error: err })
         //VER O PORQUE O ERRO NÃO TÁ SENDO MANDADO POR JSON, MAS IMPRIMIDO NO CONSOLE
     }
-})
+}
 
-module.exports = router
+module.exports = { login, logout, esqueceuSenha, resetaPassword }

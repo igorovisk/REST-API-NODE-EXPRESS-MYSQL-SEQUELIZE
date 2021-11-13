@@ -1,7 +1,6 @@
 const cookieParser = require("cookie-parser")
 const express = require("express")
-const jwt = require("jsonwebtoken")
-const controllers = require("./controllers")
+const routes = require("./routes")
 const app = express()
 const port = 5000
 const session = require("express-session")
@@ -10,22 +9,16 @@ const morganBody = require("morgan-body")
 
 app.get("/", (req, res) => res.send("Server Iniciado..."))
 
-
 //IMPLEMENTAR MORGANBODY PARA FAZER LOG DO SISTEMA
 
-
-
-
 /////////////////////////
-
-
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/usuarios", controllers.usuarios)
-app.use("/habilidades", controllers.habilidades)
-app.use("/autenticacao", controllers.autenticacao)
+app.use("/usuarios", routes.usuarios)
+app.use("/habilidades", routes.habilidades)
+app.use("/autenticacao", routes.autenticacao)
 
 //PERMITINDO CORS
 app.use(

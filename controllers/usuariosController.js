@@ -1,13 +1,8 @@
-const { Router } = require("express")
-const { Usuarios } = require("../models")
-const { Habilidades } = require("../models")
+const { Usuarios, Habilidades } = require("../models")
 const { usuarioSchema } = require("../schemas/usuarioSchema")
-const {verificaJWT} = require("../middlewares/jwtMiddleware")
-
 const Op = require("sequelize").Op
 const mysql = require("mysql2")
 const bcrypt = require("bcrypt")
-const router = Router()
 
 /////////////////////////////////////////////////////////////
 
@@ -20,7 +15,7 @@ var con = mysql.createConnection({
 })
 
 //GET ALL
-router.get("/", verificaJWT, async (req, res) => {
+const getAll = async function (req, res) {
     try {
         const usuarios = await Usuarios.findAll({
             attributes: { exclude: ["password"] },
@@ -33,14 +28,14 @@ router.get("/", verificaJWT, async (req, res) => {
             ],
         })
 
-        res.status(200).json(usuarios)
+        return res.status(200).json(usuarios)
     } catch (erro) {
-        res.status(500).json(erro)
+        return res.status(500).json(erro)
     }
-})
+}
 
 //GET ALL NÃO ADMINISTRADORES:
-router.get("/usuarioscomuns", verificaJWT, async (req, res) => {
+const getUsuariosComuns = async function (req, res) {
     try {
         const usuarios = await Usuarios.findAll({
             where: {
@@ -56,15 +51,15 @@ router.get("/usuarioscomuns", verificaJWT, async (req, res) => {
             ],
         })
 
-        res.status(200).json(usuarios)
+        return res.status(200).json(usuarios)
     } catch (erro) {
-        res.status(400).json(erro)
         console.log(erro)
+        return res.status(400).json(erro)
     }
-})
+}
 
 //GET UM SÓ USUARIO
-router.get("/:id", verificaJWT, async (req, res) => {
+const getUsuarioUnico = async function (req, res) {
     try {
         const usuario = await Usuarios.findByPk(req.params.id, {
             attributes: { exclude: ["password"] },
@@ -77,14 +72,42 @@ router.get("/:id", verificaJWT, async (req, res) => {
             ],
         })
 
-        res.status(200).json(usuario)
+        return res.status(200).json(usuario)
     } catch (erro) {
-        res.status(500).json(erro)
+        return res.status(500).json(erro)
     }
-})
+}
+
+//GET USUARIO POR HABILIDADE
+
+// const getUsuarioPorHabilidade = async function (req, res) {
+//     try{
+
+//         const habilidadeInformada = req.body.habilidade
+
+//         const sql = `SELECT u.* from Usuarios_Habilidades uh INNER JOIN Usuarios u on u.id = uh.usuarioId WHERE uh.habilidadeId = ${habilidadeInformada}`
+
+//         const usuarios = await Usuarios.findAll({
+//             attributes: { exclude: ["password"] },
+//             include: [
+//                 {
+//                     model: Habilidades,
+//                     as: "habilidades",
+//                     through: { attributes: [] },
+//                 },
+//             ],
+//         })
+
+//     }catch(err){
+//         console.log(err)
+//         res.status(400).send({message: err})
+//     }
+// })
+
+//ADICIONA HABILIDADE AO USUARIO NO FRONT
 
 //CREATE
-router.post("/", async (req, res) => {
+const criaUsuario = async function (req, res) {
     try {
         //Destruct da requisição
         const { habilidades, ...data } = req.body
@@ -141,22 +164,22 @@ router.post("/", async (req, res) => {
             console.log("DATA")
             console.log(data)
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Usuario cadastrado com sucesso:",
                 usuariocriado: newUsuario,
                 habilidades,
             })
         }
     } catch (erro) {
-        res.status(400).json({
+        console.log(erro)
+        return res.status(400).json({
             message: `Ocorreu um erro.. ${erro}`,
         })
-        console.log(erro)
     }
-})
+}
 
 //DELETE
-router.delete("/:id", verificaJWT, async (req, res) => {
+const deletaUsuario = async function (req, res) {
     try {
         const sql = `DELETE FROM Usuarios_Habilidades where usuarioId = ${req.params.id} `
 
@@ -178,56 +201,61 @@ router.delete("/:id", verificaJWT, async (req, res) => {
             force: true,
         })
 
-        res.status(200).json({
+        return res.status(200).json({
             message: `usuario deletado com sucesso`,
             usuarioDeletado: usuarioExistente.dataValues,
         })
     } catch (erro) {
-        res.status(400).json({
+        console.log(erro)
+        return res.status(400).json({
             message: erro,
         })
-        console.log(erro)
     }
-})
+}
 
 //UPDATE
-router.put("/:id", verificaJWT, async (req, res) => {
+const alteraUsuario = async function (req, res) {
     try {
         const { habilidades, ...data } = req.body
 
         //Validação
         const usuarioValido = await usuarioSchema.validate(req.body)
-               
-        if (usuarioValido.error) throw new Error(usuarioValido.error)            
+
+        if (usuarioValido.error) throw new Error(usuarioValido.error)
 
         if (usuarioValido) {
             const updatedUsuario = await Usuarios.update(data, {
                 where: {
                     id: req.params.id,
                 },
-            })                      
-            if(updatedUsuario == 0) throw new Error("Usuario não encontrado")
+            })
+            if (updatedUsuario == 0) throw new Error("Usuario não encontrado")
         }
-
 
         //CRIPTOGRAFA O PASSWORD E ENVIA PRO BANCO
         const hashedPassword = await bcrypt.hash(data.password, 10)
         const sql = `UPDATE Usuarios SET password = "${hashedPassword}" WHERE email = "${data.email}";`
-        
+
         const queryGravaPasswordCriptografado = con.query(sql)
 
         const id = req.params.id
         const alteraHabilidade = await Usuarios.findByPk(id)
         alteraHabilidade.setHabilidades(habilidades)
 
-        res.status(200).json({
-            message: "Usuario alterado com sucesso",           
+        return res.status(200).json({
+            message: "Usuario alterado com sucesso",
         })
     } catch (erro) {
         console.log(erro)
-        return res.status(400).json( erro )
-        
+        return res.status(400).json(erro)
     }
-})
+}
 
-module.exports = router
+module.exports = {
+    getAll,
+    getUsuariosComuns,
+    getUsuarioUnico,
+    criaUsuario,
+    deletaUsuario,
+    alteraUsuario,
+}
