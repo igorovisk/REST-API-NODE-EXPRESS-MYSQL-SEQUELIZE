@@ -6,6 +6,7 @@ const {
     getUsuariosPorHabilidades,
     criaUsuario,
     alteraUsuario,
+    adicionaHabilidadeAoPerfil,
     deletaUsuario,
 } = require("../controllers/usuariosController")
 const { verificaJWT } = require("../middlewares/jwtMiddleware")
@@ -48,5 +49,11 @@ router.delete("/:id", verificaJWT, async (req, res) => {
 router.put("/:id", verificaJWT, async (req, res) => {
     alteraUsuario(req, res)
 })
+
+//ADICIONA HABILIDADE AO PERFIL
+router.patch("/:id", verificaJWT, async (req, res) => {
+    adicionaHabilidadeAoPerfil(req, res)
+})
+
 
 module.exports = router

@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken")
 
 const secret = "teste"
 
-//LISTA PARA INVIABILIZAR O USO DE UM TOKEN QUE VAI SER DESLOGADO
 
 const verificaJWT = function (req, res, next) {
     const token = req.headers["x-access-token"]

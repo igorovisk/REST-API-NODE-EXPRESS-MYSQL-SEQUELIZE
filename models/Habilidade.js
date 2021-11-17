@@ -9,8 +9,17 @@ module.exports = (sequelize, DataTypes) => {
             through: "Usuarios_Habilidades",
             as: "usuarios",
             foreignKey: "habilidadeId",
+        })          
+            
+        Habilidades.NivelHabilidades = Habilidades.belongsToMany(models.NivelHabilidades, {
+            through: "Usuarios_Habilidades",
+            as: "nivelHabilidades",
+            foreignKey: "habilidadeId",
         })
+    
     }
+
+    
 
     return Habilidades
 }

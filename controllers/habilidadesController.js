@@ -1,4 +1,4 @@
-const { Usuarios, Habilidades } = require("../models")
+const { Habilidades } = require("../models")
 const { habilidadeSchema } = require("../schemas/habilidadeSchema")
 const checkIfIsAdmin = require("../utils/checkIfIsAdm")
 
@@ -21,43 +21,6 @@ const getHabilidadeUnica = async function (req, res) {
         return res.status(500).json({ message: erro })
     }
 }
-
-//CREATE
-// SE FOR USUARIO COMUM, ELE SÓ VAI PODER UTILIZAR O ADICIONA HABILIDADE AO PERFIL.
-//METODO PATCH????
-// const adicionaHabilidadeAoPerfil = async function (req, res) {
-//     try {
-//         if (!(await checkIfIsUsuarioLogado(req, res))) {
-//             res.status(401)
-//             throw new Error(
-//                 "Usuario Não Logado"
-//             )
-//         }
-//         const habilidades = await Habilidades.findAll()
-
-//          //VERIFICA SE HABILIDADE EXISTE no BANCO
-//          //VER SE NO FRONT ELA VEM POR ID OU POR NOME
-//          const verificaHabilidade = await Habilidades.findAll({
-//             where: { id: req.body.habilidades },
-//         })
-
-//         //O USUARIO PRA CHEGAR ATÉ AQUI TEM ESTAR LOGADO, ENTÃO ELE EXISTE E É VALIDO
-
-//         newUsuario.setHabilidades(habilidades)
-
-
-
-
-
-
-
-//     } catch (erro) {
-//         console.log(erro)
-//         return res.status(400).json({
-//             message: `Ocorreu um erro.. ${erro}`,
-//         })
-//     }
-// }
 
 //ESSE METODO É PRA CADASTRAR A HABILIDADE NO SISTEMA PROS USUARIOS PODEREM SELECIONAR ELA NO CHECKBOX E ADICIONAR AO SEU PERFIL
 const criaHabilidade = async function (req, res) {

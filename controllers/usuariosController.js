@@ -98,70 +98,48 @@ const getUsuariosPorHabilidades = async function (req, res) {
     }
 }
 
-// ADICIONA HABILIDADE AO USUARIO NO FRONT
-
+//METODO DE REGISTRO DO USER AO SISTEMA
 //CREATE
 const criaUsuario = async function (req, res) {
     try {
-        //Destruct da requisição
-        const { habilidades, ...data } = req.body
+        const input = req.body
 
         //Validação dos campos da requisição pelo JOI VALIDATOR
         const usuarioValido = await usuarioSchema.validate(req.body)
         if (usuarioValido.error) throw new Error(usuarioValido.error)
 
-        //VERIFICA SE HABILIDADE EXISTE
-        const verificaHabilidade = await Habilidades.findAll({
-            where: { id: req.body.habilidades },
-        })
-
-        if (verificaHabilidade.length != req.body.habilidades.length)
-            throw new Error(
-                "Id de alguma habilidade é inexistente, favor verificar dados..."
-            )
-
         //VERIFICA SE JÁ EXISTE CADASTRO DE LOGIN, CPF E EMAIL EXISTENTES NO BANCO DE DADOS:
         const verificaSeExisteNoSistema = await Usuarios.findOne({
             where: {
                 [Op.or]: [
-                    { email: { [Op.eq]: data.email } },
-                    { login: { [Op.eq]: data.login } },
-                    { cpf: { [Op.eq]: data.cpf } },
+                    { email: { [Op.eq]: input.email } },
+                    { login: { [Op.eq]: input.login } },
+                    { cpf: { [Op.eq]: input.cpf } },
                 ],
             },
         })
 
-        if (verificaSeExisteNoSistema?.dataValues.cpf == data.cpf)
+        if (verificaSeExisteNoSistema?.dataValues.cpf == input.cpf)
             throw new Error("CPF já cadastrado")
-        if (verificaSeExisteNoSistema?.dataValues.login == data.login)
+        if (verificaSeExisteNoSistema?.dataValues.login == input.login)
             throw new Error("Login já cadastrado")
-        if (verificaSeExisteNoSistema?.dataValues.email == data.email)
+        if (verificaSeExisteNoSistema?.dataValues.email == input.email)
             throw new Error("Email já cadastrado")
 
         // EFETIVA O CADASTRO APÓS PASSAR PELAS LINHAS ACIMA SEM ERRO:
         if (usuarioValido) {
             //CRIPTOGRAFA PASSWORD
-            const hashedPassword = await bcrypt.hash(data.password, 10)
+            const hashedPassword = await bcrypt.hash(input.password, 10)
 
             // FINALMENTE CRIA O USUARIO APÓS AS VALIDAÇÕES
-            const newUsuario = await Usuarios.create({
-                nome: data.nome,
-                cpf: data.cpf,
-                login: data.login,
-                password: hashedPassword,
-                dataDeNascimento: data.dataDeNascimento,
-                resetPassword: data.resetPassword,
-                email: data.email,
-                isAdm: data.isAdm,
-            })
-            newUsuario.setHabilidades(habilidades)
+            const newUsuario = await Usuarios.create(input)
+
             console.log("DATA")
-            console.log(data)
+            console.log(input)
 
             return res.status(200).json({
                 message: "Usuario cadastrado com sucesso:",
                 usuariocriado: newUsuario,
-                habilidades,
             })
         }
     } catch (erro) {
@@ -175,14 +153,6 @@ const criaUsuario = async function (req, res) {
 //DELETE
 const deletaUsuario = async function (req, res) {
     try {
-        
-        if (!(await checkIfIsUsuarioLogado(req, res))) {
-            res.status(401)
-            throw new Error(
-                "Usuario Logado não corresponde ao id que quer deletar"
-            )
-        }
-
         const sql = `DELETE FROM Usuarios_Habilidades where usuarioId = ${req.params.id} `
 
         //DELETA A HABILIDADE LIGADA AO USUARIO ANTES
@@ -194,6 +164,26 @@ const deletaUsuario = async function (req, res) {
 
         if (req.params.id != usuarioExistente.dataValues.id) {
             throw new Error("Usuario inexistente")
+        }
+
+        if (await checkIfIsAdmin(req, res)) {
+            const deletedUsuario = await Usuarios.destroy({
+                where: {
+                    id: req.params.id,
+                },
+                force: true,
+            })
+            return res.status(200).json({
+                message: `usuario deletado com sucesso`,
+                usuarioDeletado: usuarioExistente.dataValues,
+            })
+        }
+
+        if (!(await checkIfIsUsuarioLogado(req, res))) {
+            res.status(401)
+            throw new Error(
+                "Usuario Logado não corresponde ao id que quer deletar"
+            )
         }
 
         const deletedUsuario = await Usuarios.destroy({
@@ -215,7 +205,7 @@ const deletaUsuario = async function (req, res) {
     }
 }
 
-//UPDATE
+//UPDATE COMPLETO POR PUT
 const alteraUsuario = async function (req, res) {
     try {
         const { habilidades, ...data } = req.body
@@ -253,6 +243,56 @@ const alteraUsuario = async function (req, res) {
     }
 }
 
+// SE FOR USUARIO COMUM, ELE SÓ VAI PODER UTILIZAR O ADICIONA HABILIDADE AO PERFIL.
+// METODO PATCH????
+
+const adicionaHabilidadeAoPerfil = async function (req, res) {
+    try {
+        //VERIFICA SE HABILIDADE EXISTE no BANCO
+        const verificaHabilidade = await Habilidades.findAll({
+            where: { id: req.body.habilidade },
+        })
+        //VER SE NO FRONT ELA VEM POR ID OU POR NOME
+
+        const habilidadeInserida = req.body.habilidade
+        console.log("verificaHabilidade")
+        console.log(verificaHabilidade.length)
+        console.log(verificaHabilidade)
+
+        console.log("habilidadeInserida")
+
+        if (verificaHabilidade.length == 0) {
+            res.status(400)
+            throw new Error("Id de Habilidade inválido")
+        }
+
+        const usuario = await Usuarios.findOne({
+            where: { id: req.params.id },
+        })
+
+        const usuarioId = usuario.dataValues.id
+
+        const novaData = new Date()
+        const novaDataFormatada = novaData
+            .toISOString()
+            .replace("T", " ")
+            .split(".")
+        const now = novaDataFormatada[0]
+
+        const sql = `INSERT INTO Usuarios_Habilidades (usuarioId, habilidadeId, createdAt, updatedAt) values ("${usuarioId}", "${habilidadeInserida}", "${now}", "${now}");`
+
+        const gravaNoBanco = con.query(sql, function (err, result) {
+            if (err) console.log(err)
+            console.log(result)
+            return res.status(200).json("Habilidade inserida com sucesso")
+        })
+    } catch (erro) {
+        return res.json({
+            message: `Ocorreu um erro.. ${erro}`,
+        })
+    }
+}
+
 module.exports = {
     getAll,
     getUsuariosComuns,
@@ -261,4 +301,5 @@ module.exports = {
     criaUsuario,
     deletaUsuario,
     alteraUsuario,
+    adicionaHabilidadeAoPerfil,
 }
