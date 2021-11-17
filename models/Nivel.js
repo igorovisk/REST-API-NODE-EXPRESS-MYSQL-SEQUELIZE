@@ -1,18 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
-    const NivelHabilidades = sequelize.define("NivelHabilidades", {
+    const Nivel = sequelize.define("Nivel", {
         nivel: DataTypes.STRING,
     })
 
-    NivelHabilidades.associate = (models) => {
-        NivelHabilidades.Habilidades = NivelHabilidades.belongsToMany(
+    Nivel.associate = (models) => {
+        Nivel.Habilidades = Nivel.belongsToMany(
             models.Habilidades,
             {
                 through: "Usuarios_Habilidades",
-                as: "NivelHabilidades",
+                as: "nivel",
                 foreignKey: "nivelHabilidadesId",
             }
         )
     }
 
-    return NivelHabilidades
+    return Nivel
 }

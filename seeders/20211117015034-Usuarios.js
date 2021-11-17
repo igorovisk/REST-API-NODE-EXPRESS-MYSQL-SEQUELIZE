@@ -6,18 +6,12 @@ const bcrypt = require("bcrypt")
 const senhaAdmSeeder = "admseeder"
 const senhaUsuarioFicticio = "usuarioFicticio"
 
-const criptografaAdmPassword = async function () {
-  const senhaAdmSeederCriptografado = await bcrypt.hash(senhaAdmSeeder, 10) 
-  return senhaAdmSeederCriptografado
+const criptografaSenha = async function (senha) {
+  const senhaCriptografada = await bcrypt.hash(senha, 10) 
+  return senhaCriptografada
 }
 
-const criptografaUsuarioFicticioPassword = async function () {
-  const senhaUsuarioFicticioCriptografado = await bcrypt.hash(
-    senhaUsuarioFicticio,
-    10
-  )
-  return senhaUsuarioFicticioCriptografado
-}
+
 
 
 
@@ -36,7 +30,7 @@ module.exports = {
                     nome: "admSeeder",
                     cpf: "00000000000",
                     login: "admseeder",
-                    password: await criptografaAdmPassword(),
+                    password: await criptografaSenha(senhaAdmSeeder),
                     dataDeNascimento: "1994/02/01",
                     email: "admseeder@gmail.com",
                     isAdm: true,
@@ -47,7 +41,7 @@ module.exports = {
                     nome: "UsuarioFicticio",
                     cpf: "11111111111",
                     login: "usuarioficticio",
-                    password: await criptografaUsuarioFicticioPassword(),
+                    password: await criptografaSenha(senhaUsuarioFicticio),
                     dataDeNascimento: "1994/02/01",
                     email: "usuarioficticio@gmail.com",
                     isAdm: false,

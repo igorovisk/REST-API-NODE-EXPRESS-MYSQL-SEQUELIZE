@@ -2,7 +2,7 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        return queryInterface.createTable("Nivel_Habilidades", {
+        return queryInterface.createTable("Nivel", {
             // nome de tabela é no PLURAL
             id: {
                 type: Sequelize.INTEGER,
@@ -26,6 +26,6 @@ module.exports = {
     },
 
     down: async (queryInterface, Sequelize) => {
-        return queryInterface.dropTable("Nivel_Habilidades")
+        return queryInterface.dropTable("Nivel")
     },
 }

@@ -59,3 +59,39 @@ module.exports = {
 
 
 const sql = `UPDATE Usuarios SET resetPassword = "${tokenMail}", resetPasswordExpires = "2021-11-11 19:17:56" WHERE email = "igorovisk@gmail.com";
+
+
+
+
+
+"use strict"
+
+module.exports = {
+    up: async (queryInterface, Sequelize) => {
+        return queryInterface.createTable("Nivel_Habilidades", {
+            // nome de tabela é no PLURAL
+            id: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false,
+            },
+            nivel: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            createdAt: {
+                type: Sequelize.DATE,
+                allowNull: false,
+            },
+            updatedAt: {
+                type: Sequelize.DATE,
+                allowNull: false,
+            },
+        })
+    },
+
+    down: async (queryInterface, Sequelize) => {
+        return queryInterface.dropTable("Nivel_Habilidades")
+    },
+}
