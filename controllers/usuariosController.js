@@ -132,7 +132,16 @@ const criaUsuario = async function (req, res) {
             const hashedPassword = await bcrypt.hash(input.password, 10)
 
             // FINALMENTE CRIA O USUARIO APÓS AS VALIDAÇÕES
-            const newUsuario = await Usuarios.create(input)
+            const newUsuario = await Usuarios.create({
+                nome: input.nome,
+                cpf: input.cpf,
+                login: input.login,
+                password: hashedPassword,
+                dataDeNascimento: input.dataDeNascimento,
+                resetPassword: input.resetPassword,
+                email: input.email,
+                isAdm: input.isAdm,
+            })
 
             console.log("DATA")
             console.log(input)

@@ -7,6 +7,8 @@ const {
 } = require("../controllers/authController")
 const { Router } = require("express")
 const router = Router()
+const cors = require("cors")
+router.use(cors());
 
 ///////////////////////////////////////////////////////////////////
 //ROTAS

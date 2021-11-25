@@ -12,7 +12,8 @@ const {
 const { verificaJWT } = require("../middlewares/jwtMiddleware")
 const { Router } = require("express")
 const router = Router()
-
+const cors = require("cors")
+router.use(cors());
 ///////////////////////////////////////////////////////////////////
 
 //GETALL

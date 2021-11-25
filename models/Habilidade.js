@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: "habilidadeId",
         })          
             
-        Habilidades.NivelHabilidades = Habilidades.belongsToMany(models.NivelHabilidades, {
-            through: "Usuarios_Habilidades",
-            as: "nivelHabilidades",
-            foreignKey: "habilidadeId",
-        })
+        // Habilidades.NivelHabilidades = Habilidades.belongsToMany(models.NivelHabilidades, {
+        //     through: "Usuarios_Habilidades",
+        //     as: "nivelHabilidades",
+        //     foreignKey: "habilidadeId",
+        // })
     
     }
 

@@ -22,25 +22,29 @@ var con = mysql.createConnection({
 const login = async function (req, res) {
     const { login, password } = req.body
     const usuario = await Usuarios.findOne({ where: { login: login } })
+    console.log(login, password)
 
     try {
+        console.log(usuario)
+        console.log((await bcrypt.compare(password, usuario.dataValues.password)))
         if (
             usuario &&
             (await bcrypt.compare(password, usuario.dataValues.password))
-        ) {
-            const teste = "teste"
+            ) {
             const token = jwt.sign({ login: login }, secret, {
-                expiresIn: 5000,
+                expiresIn: 3000,
             })
+            
             res.status(200).json({
                 message: "logado no sistema!",
                 usuario: login,
-                auth: true,
+                auth: true,                
                 token,
             })
-        } else throw new Error("login falhou")
+        } else throw new Error()
     } catch (erro) {
-        res.status(401).json({ message: `${erro}` })
+        console.log(erro)
+        res.status(401).json(erro)
     }
 }
 

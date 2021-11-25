@@ -3,16 +3,16 @@ module.exports = (sequelize, DataTypes) => {
         nivel: DataTypes.STRING,
     })
 
-    Nivel.associate = (models) => {
-        Nivel.Habilidades = Nivel.belongsToMany(
-            models.Habilidades,
-            {
-                through: "Usuarios_Habilidades",
-                as: "nivel",
-                foreignKey: "nivelHabilidadesId",
-            }
-        )
-    }
+    // Nivel.associate = (models) => {
+    //     Nivel.Habilidades = Nivel.belongsToMany(
+    //         models.Habilidades,
+    //         {
+    //             through: "Usuarios_Habilidades",
+    //             as: "nivel",
+    //             foreignKey: "nivelHabilidadesId",
+    //         }
+    //     )
+    // }
 
     return Nivel
 }
