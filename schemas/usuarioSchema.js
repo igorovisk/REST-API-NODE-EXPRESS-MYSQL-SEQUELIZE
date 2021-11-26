@@ -11,7 +11,7 @@ const usuarioSchema = Joi.object({
     dataDeNascimento: Joi.date().less(now).required(),
     resetPassword: Joi.string(),    
     email: Joi.string().email().lowercase().required(),
-    isAdm: Joi.boolean().required(),
+    // isAdm: Joi.boolean().required(),
     habilidades: Joi.array(),
 })
 
