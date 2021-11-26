@@ -23,7 +23,7 @@ const login = async function (req, res) {
     const { login, password } = req.body
     const usuario = await Usuarios.findOne({ where: { login: login } })
     const id = usuario.dataValues.id
-   
+   console.log(login)
 
     try {
         console.log(usuario)
@@ -46,8 +46,8 @@ const login = async function (req, res) {
             })
         } else throw new Error()
     } catch (erro) {
-        console.log(erro)
-        res.status(401).json(erro)
+        console.log('usuario ou senha invalidos')
+        res.status(401).json({message: 'usuario ou senha inválidos'})
     }
 }
 

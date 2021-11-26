@@ -7,14 +7,9 @@ const senhaAdmSeeder = "admseeder"
 const senhaUsuarioFicticio = "usuarioFicticio"
 
 const criptografaSenha = async function (senha) {
-  const senhaCriptografada = await bcrypt.hash(senha, 10) 
-  return senhaCriptografada
+    const senhaCriptografada = await bcrypt.hash(senha, 10)
+    return senhaCriptografada
 }
-
-
-
-
-
 
 //CRIADO POR CONTA DO CREATEDAT E UPDATEDAT DO SEQUELIZE ESTAR COMO REQUIRED
 const novaData = new Date()
